@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { ExpressAdapter } from '@nestjs/platform-express'
 import { AppModule } from './app.module'
+import { ValidationPipe } from '@nestjs/common'
 import * as express from 'express'
 import * as functions from 'firebase-functions'
 import * as helmet from 'helmet'
@@ -12,6 +13,7 @@ const createNestServer = async (expressInstance: typeof server) => {
 
   app.use(helmet())
   app.enableCors()
+  app.useGlobalPipes(new ValidationPipe())
 
   console.log('the server is starting @ firebase')
   return app.init()
