@@ -7,7 +7,7 @@ import * as helmet from 'helmet'
 
 const server = express()
 
-const createNestServer = async (expressInstance) => {
+const createNestServer = async (expressInstance: typeof server) => {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressInstance))
 
   app.use(helmet())
@@ -21,4 +21,6 @@ createNestServer(server)
   .then(() => console.log('Nest Ready'))
   .catch((err) => console.error('Nest broken', err))
 
-export const api = functions.https.onRequest(server)
+export const api = {
+  v1: functions.region('asia-northeast-1').runWith({ memory: '2GB' }).https.onRequest(server),
+}

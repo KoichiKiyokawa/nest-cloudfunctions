@@ -1,1 +1,12 @@
-{}
+{
+  "functions": {
+    "predeploy": ["yarn --cwd \"$RESOURCE_DIR\" run build"],
+    "source": "server"
+  },
+  "emulators": {
+    "functions": {
+      "host": "localhost",
+      "port": "5002"
+    }
+  }
+}
