@@ -1,6 +1,9 @@
 import { admin } from '~/modules/firebase-admin'
 
-export abstract class BaseRepository<T extends Record<string, unknown>> {
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface TBase {}
+
+export abstract class BaseRepository<T extends TBase> {
   abstract get collectionName(): string
   get collectionReference() {
     return admin.firestore().collection(this.collectionName) as admin.firestore.CollectionReference<T>

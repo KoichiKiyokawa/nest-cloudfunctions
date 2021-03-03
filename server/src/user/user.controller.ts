@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common'
+import { AuthorizedRequest } from '~/auth/auth.type'
 import { CreateUserDto } from './user.dto'
 import { UserRepository } from './user.repository'
 
@@ -10,15 +22,22 @@ export class UserController {
     return { users }
   }
 
-  @Get(':id')
-  async show(@Param('id') id: string) {
-    const user = await new UserRepository().find(id)
+  @Get(':uid')
+  async show(@Param('uid') uid: string) {
+    const user = await new UserRepository().find(uid)
     return { user }
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createUserDto: CreateUserDto, @Req() req: any) {
-    if (req.user) await new UserRepository().create(createUserDto)
+  async create(@Body() createUserDto: CreateUserDto, @Req() req: AuthorizedRequest) {
+    if (req.user != null) throw new UnauthorizedException()
+
+    await new UserRepository().create(createUserDto)
+  }
+
+  @Patch(':uid')
+  async update(@Param() uid: string, @Req() req: AuthorizedRequest) {
+    if (req.user.uid !== uid) throw new UnauthorizedException()
   }
 }
